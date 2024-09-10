@@ -2,7 +2,7 @@ import { config } from "dotenv";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
+import fileUpload from "express-fileupload";
 const app = express();
 
 config({
@@ -18,4 +18,13 @@ app.use(
 );
 
 app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
+
 export default app;
