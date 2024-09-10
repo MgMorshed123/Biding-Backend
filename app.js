@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import connectToDb from "./db.js";
 import { errorMiddleWare } from "./middlewares/error.js";
+import userRoutes from "./Routes/userRoutes.js";
 const app = express();
 
 config({
@@ -28,6 +29,7 @@ app.use(
     tempFileDir: "/tmp/",
   })
 );
+app.use("/api/v1/user", userRoutes);
 app.use(errorMiddleWare);
 connectToDb();
 export default app;
