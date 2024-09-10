@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
+import connectToDb from "./db.js";
 const app = express();
 
 config({
@@ -26,5 +27,5 @@ app.use(
     tempFileDir: "/tmp/",
   })
 );
-
+connectToDb();
 export default app;
