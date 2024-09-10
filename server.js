@@ -1,10 +1,10 @@
 import app from "./app.js";
 import cloudinary from "cloudinary";
 
-cloudinary.v2.config({
-  Cloud_name: process.env.Cloud_name,
-  API_Secret: process.env.API_Secret,
-  api_Key: process.env.api_Key,
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 app.listen(process.env.PORT, () => {
   console.log(`server is listening on PORT ${process.env.PORT}`);

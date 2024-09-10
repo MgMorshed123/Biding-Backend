@@ -1,13 +1,13 @@
-import ErrorHandler from "../middlewares/error";
-import { User } from "../models/userSchema";
+import ErrorHandler from "../middlewares/error.js";
+import { User } from "../models/userSchema.js";
 import { v2 as cloudinary } from "cloudinary";
 
 export const register = async (req, res, next) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
+  if (!req.files || !req.files.profileImage) {
     return next(new ErrorHandler("Profile Image Required", 400));
   }
 
-  const { profileImage } = req.file;
+  const profileImage = req.files.profileImage;
 
   const allowedFormats = ["image/png", "image/jpeg", "image/webp"];
 
@@ -44,7 +44,7 @@ export const register = async (req, res, next) => {
       );
     }
     if (!paypalEmail) {
-      return next(new ErrorHandler("Please Provide Your paypalEmail", 400));
+      return next(new ErrorHandler("Please Provide Your PayPal Email", 400));
     }
   }
 
@@ -68,7 +68,7 @@ export const register = async (req, res, next) => {
     );
 
     return next(
-      new ErrorHandler("Failed to Upload Profle Image to cloudinary")
+      new ErrorHandler("Failed to Upload Profile Image to Cloudinary")
     );
   }
 
@@ -88,7 +88,7 @@ export const register = async (req, res, next) => {
       bankTransfer: {
         bankAccountNumber,
         bankAccountName,
-        bankNameString,
+        bankName,
       },
       easypaisa: {
         easypaisaAccountNumber,
@@ -99,6 +99,7 @@ export const register = async (req, res, next) => {
       },
     },
   });
+
   res.status(201).json({
     success: true,
     message: "User Registered Successfully",
