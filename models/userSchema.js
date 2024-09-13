@@ -1,30 +1,25 @@
 import mongoose from "mongoose";
-
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema({
   userName: {
     type: String,
-    minLength: [3, "username must contains at least 3 character"],
-    maxLength: [40, "username can not exceed 40 characters"],
+    minLength: [3, "Username must caontain at least 3 characters."],
+    maxLength: [40, "Username cannot exceed 40 characters."],
   },
-
   password: {
     type: String,
     selected: false,
-    minLength: [8, "Password must contains at least 8 character"],
-    maxLength: [40, "Password can not exceed 40 characters"],
+    minLength: [8, "Password must caontain at least 8 characters."],
   },
-
   email: String,
   address: String,
   phone: {
     type: String,
-    selected: false,
-    minLength: [11, "Phone number must contains exact 11 character"],
-    maxLength: [11, "Phone number must contains exact 11 character"],
+    minLength: [11, "Phone Number must caontain exact 11 digits."],
+    maxLength: [11, "Phone Number must caontain exact 11 digits."],
   },
-
   profileImage: {
     public_id: {
       type: String,
@@ -35,7 +30,6 @@ const userSchema = new mongoose.Schema({
       required: true,
     },
   },
-
   paymentMethods: {
     bankTransfer: {
       bankAccountNumber: String,
@@ -45,21 +39,19 @@ const userSchema = new mongoose.Schema({
     easypaisa: {
       easypaisaAccountNumber: Number,
     },
-
     paypal: {
       paypalEmail: String,
     },
   },
-
   role: {
     type: String,
     enum: ["Auctioneer", "Bidder", "Super Admin"],
   },
-  unpaidComission: {
+  unpaidCommission: {
     type: Number,
     default: 0,
   },
-  auctionMon: {
+  auctionsWon: {
     type: Number,
     default: 0,
   },
@@ -77,8 +69,17 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();
   }
-
   this.password = await bcrypt.hash(this.password, 10);
 });
+
+userSchema.methods.comparePassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+userSchema.methods.generateJsonWebToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+};
 
 export const User = mongoose.model("User", userSchema);
