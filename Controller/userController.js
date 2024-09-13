@@ -124,10 +124,11 @@ export const login = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Invalid Credentials", 400));
   }
 
-  generateToken(user, "user successfully registered", 200, res);
+  generateToken(user, "user logged in ", 200, res);
 });
-export const getProfile = catchAsyncErrors(async, (req, res, next) => {});
 
-export const logOut = catchAsyncErrors(async, (req, res, next) => {});
+export const getProfile = catchAsyncErrors(async (req, res, next) => {});
 
-export const fetchLeaderBoard = catchAsyncErrors(async, (req, res, next) => {});
+export const logOut = catchAsyncErrors(async (req, res, next) => {});
+
+export const fetchLeaderBoard = catchAsyncErrors(async (req, res, next) => {});
