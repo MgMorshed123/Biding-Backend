@@ -1,6 +1,8 @@
 import ErrorHandler from "../middlewares/error.js";
 import { User } from "../models/userSchema.js";
 import { v2 as cloudinary } from "cloudinary";
+import { generateToken } from "../utilitis/generateToken.js";
+import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 
 export const register = async (req, res, next) => {
   if (!req.files || !req.files.profileImage) {
@@ -100,8 +102,12 @@ export const register = async (req, res, next) => {
     },
   });
 
-  res.status(201).json({
-    success: true,
-    message: "User Registered Successfully",
-  });
+  generateToken(user, "User Registered Successfully", 201, res);
 };
+
+export const login = catchAsyncErrors(async, (req, res, next) => {});
+export const getProfile = catchAsyncErrors(async, (req, res, next) => {});
+
+export const logOut = catchAsyncErrors(async, (req, res, next) => {});
+
+export const fetchLeaderBoard = catchAsyncErrors(async, (req, res, next) => {});
