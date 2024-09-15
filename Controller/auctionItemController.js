@@ -2,6 +2,7 @@ import req from "express/lib/request";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
 import ErrorHandler from "../middlewares/error";
 import { Auction } from "../models/auctionSchema";
+import { v2 as cloudinary } from "cloudinary";
 
 export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
   if (!req.files || !req.files.image) {
@@ -59,9 +60,9 @@ export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
 
   try {
     const cloudinaryResponse = await cloudinary.uploader.upload(
-      profileImage.tempFilePath,
+      image.tempFilePath,
       {
-        folder: "MERN_AUCTION_PLATFORM_USERS",
+        folder: "MERN_AUCTION_PLATFORM_AUCTIONS",
       }
     );
 
@@ -75,5 +76,24 @@ export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
         new ErrorHandler("Failed to Upload Profile Image to Cloudinary")
       );
     }
+
+    const auctionItem = await Auction.create({
+      title,
+      description,
+      category,
+      condition,
+      startTime,
+      endTime,
+      image: {
+        public_id: cloudinaryResponse.public_id,
+        url: cloudinaryResponse.secure_url,
+      },
+      createdBy: req.user._id,
+    });
+
+    return res.status(201).json({
+      success: false,
+      message: "Auction created Successfully",
+    });
   } catch (error) {}
 });
