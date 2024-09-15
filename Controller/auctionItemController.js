@@ -56,4 +56,24 @@ export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
   if (alreadyOneAuctionActive) {
     return next(new ErrorHandler("You have Already Active Auction"));
   }
+
+  try {
+    const cloudinaryResponse = await cloudinary.uploader.upload(
+      profileImage.tempFilePath,
+      {
+        folder: "MERN_AUCTION_PLATFORM_USERS",
+      }
+    );
+
+    if (!cloudinaryResponse || cloudinaryResponse.error) {
+      console.error(
+        "Cloudinary Error",
+        cloudinaryResponse.error || "Unknown Cloudinary Error"
+      );
+
+      return next(
+        new ErrorHandler("Failed to Upload Profile Image to Cloudinary")
+      );
+    }
+  } catch (error) {}
 });
