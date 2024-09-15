@@ -93,7 +93,12 @@ export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
 
     return res.status(201).json({
       success: false,
-      message: "Auction created Successfully",
+      message: `Auction Item created and will be listed on Auction Page at  ${startTime}`,
+      auctionItem,
     });
-  } catch (error) {}
+  } catch (error) {
+    return next(
+      new ErrorHandler(error.message || "fAILED TO CREATE AUCTION", 500)
+    );
+  }
 });
