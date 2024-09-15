@@ -4,7 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import connectToDb from "./db.js";
-import { errorMiddleWare } from "./middlewares/error.js";
+import errorMiddleWare from "./middlewares/error.js";
 import userRoutes from "./Routes/userRoutes.js";
 const app = express();
 
