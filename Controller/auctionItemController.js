@@ -4,6 +4,7 @@ import ErrorHandler from "../middlewares/error";
 import { Auction } from "../models/auctionSchema";
 import { v2 as cloudinary } from "cloudinary";
 import mongoose from "mongoose";
+import { User } from "../models/userSchema";
 
 export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
   if (!req.files || Object.keys(req.files).length === 0) {
@@ -203,4 +204,24 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
       )
     );
   }
+
+  data.bids = [];
+  data.commissionCalculated = false;
+  auctionItem = await Auction.findByIdAndUpdate(id, data, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: true,
+  });
+
+  const createdBy = await User.findById(req.user._id);
+
+  createdBy.unpaidCommission = 0;
+
+  await createdBy.save();
+
+  res.status(200).json({
+    success: true,
+    auctionItem,
+    message: `Auction Republished and will be active on ${req.body.startTime}`,
+  });
 });
