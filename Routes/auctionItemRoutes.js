@@ -4,6 +4,7 @@ import {
   addNewAuctionItem,
   getAllItems,
   getAuctionDetails,
+  getMyAuctionItems,
   removeFromAuction,
   republishItem,
 } from "../Controller/auctionItemController";
@@ -26,6 +27,13 @@ router.delete(
   isAuthenticated,
   isAuthorized("Auctioneer"),
   removeFromAuction
+);
+
+router.get(
+  "/myitems",
+  isAuthenticated,
+  isAuthorized("Auctioneer"),
+  getMyAuctionItems
 );
 
 router.put(
