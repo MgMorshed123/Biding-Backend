@@ -1,6 +1,9 @@
+import mongoose from "mongoose";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
+import { Auction } from "../models/auctionSchema.js";
+import ErrorHandler from "../middlewares/error.js";
 
-export const removeFromAuction = catchAsyncErrors(async (req, res, next) => {
+export const deleteAuctionItem = catchAsyncErrors(async (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -19,3 +22,22 @@ export const removeFromAuction = catchAsyncErrors(async (req, res, next) => {
     message: "Auction Items Deleted Successfuly",
   });
 });
+
+export const getAllPaymentProofs = catchAsyncErrors(async (req, res, next) => {
+  let paymentProofs = await PaymentProof.find();
+  res.status(200).json({
+    success: true,
+    paymentProofs,
+  });
+});
+
+export const getPaymentProofDetail = catchAsyncErrors(
+  async (req, res, next) => {
+    const { id } = req.params;
+    const paymentProofDetail = await PaymentProof.findById(id);
+    res.status(200).json({
+      success: true,
+      paymentProofDetail,
+    });
+  }
+);
