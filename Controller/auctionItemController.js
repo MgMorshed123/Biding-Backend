@@ -100,3 +100,19 @@ export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
     );
   }
 });
+
+export const getAllItems = catchAsyncErrors(async (req, res, next) => {
+  let items = await Auction.find();
+
+  res.status(200).json({
+    success: true,
+    items,
+  });
+});
+
+export const getMyAuctionItems = catchAsyncErrors(async (req, res, next) => {});
+export const getAuctionDetails = catchAsyncErrors(async (req, res, next) => {});
+
+export const removeFromAuction = catchAsyncErrors(async (req, res, next) => {});
+
+export const republishItem = catchAsyncErrors(async (req, res, next) => {});
