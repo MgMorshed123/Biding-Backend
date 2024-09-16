@@ -170,7 +170,7 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Invalid Id Format", 400));
   }
 
-  const auctionItem = await Auction.findById(id);
+  let auctionItem = await Auction.findById(id);
 
   if (!auctionItem) {
     return next(new ErrorHandler("Auction Not Found ", 400));
@@ -182,7 +182,7 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  const data = {
+  let data = {
     startTime: new Date(req.body.startTime),
     endTime: new Date(req.body.endTime),
   };
@@ -213,7 +213,18 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
     useFindAndModify: true,
   });
 
-  const createdBy = await User.findById(req.user._id);
+  const createdBy = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      unpaidCommission: 0,
+    },
+
+    {
+      new: true,
+      runValidators: false,
+      useFindAndModify: false,
+    }
+  );
 
   createdBy.unpaidCommission = 0;
 
