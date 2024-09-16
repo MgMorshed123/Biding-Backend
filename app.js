@@ -7,6 +7,7 @@ import connectToDb from "./db.js";
 import errorMiddleWare from "./middlewares/error.js";
 import userRoutes from "./Routes/userRoutes.js";
 import auctionItemRoutes from "./Routes/auctionItemRoutes.js";
+import bidRoutes from "./Routes/bidRoutes.js";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(
 );
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/auctionitem", auctionItemRoutes);
+app.use("/api/v1/bid", bidRoutes);
 
 app.use(errorMiddleWare);
 connectToDb();

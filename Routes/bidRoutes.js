@@ -10,3 +10,5 @@ router.post(
   isAuthorized("Auctioneer"),
   placeBid
 );
+
+export default router;
