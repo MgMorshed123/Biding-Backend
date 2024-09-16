@@ -3,6 +3,7 @@ import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
 import ErrorHandler from "../middlewares/error";
 import { Auction } from "../models/auctionSchema";
 import { v2 as cloudinary } from "cloudinary";
+import mongoose from "mongoose";
 
 export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
   if (!req.files || Object.keys(req.files).length === 0) {
@@ -111,7 +112,28 @@ export const getAllItems = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const getMyAuctionItems = catchAsyncErrors(async (req, res, next) => {});
-export const getAuctionDetails = catchAsyncErrors(async (req, res, next) => {});
+
+export const getAuctionDetails = catchAsyncErrors(async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(new ErrorHandler("Invalid Id Format", 400));
+  }
+
+  const auctionItem = await Auction.findById(id);
+
+  if (!auctionItem) {
+    return next(new ErrorHandler("Auction Not Found ", 400));
+  }
+
+  const bidders = auctionItem.bids.sort((a, b) => b.bid - a.bid);
+
+  res.status(200).json({
+    success: true,
+    auctionItem,
+    bidders,
+  });
+});
 
 export const removeFromAuction = catchAsyncErrors(async (req, res, next) => {});
 
