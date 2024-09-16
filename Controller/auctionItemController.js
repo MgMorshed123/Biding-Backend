@@ -162,4 +162,16 @@ export const removeFromAuction = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-export const republishItem = catchAsyncErrors(async (req, res, next) => {});
+export const republishItem = catchAsyncErrors(async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(new ErrorHandler("Invalid Id Format", 400));
+  }
+
+  const auctionItem = await Auction.findById(id);
+
+  if (!auctionItem) {
+    return next(new ErrorHandler("Auction Not Found ", 400));
+  }
+});
