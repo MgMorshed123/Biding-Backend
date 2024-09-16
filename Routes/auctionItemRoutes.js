@@ -8,6 +8,7 @@ import {
   removeFromAuction,
   republishItem,
 } from "../Controller/auctionItemController";
+import { trackCommissionStatus } from "../middlewares/trackCommisionStatus";
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.post(
   "/create",
   isAuthenticated,
   isAuthorized("Auctioneer"),
+  trackCommissionStatus,
   addNewAuctionItem
 );
 
