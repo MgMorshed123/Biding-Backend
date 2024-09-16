@@ -176,12 +176,15 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Auction Not Found ", 400));
   }
 
-  if (auctionItem.endTime > Date.now()) {
+  if (new Date(auctionItem.endTime) > Date.now()) {
     return next(
       new ErrorHandler("Auction is Already active , Cannot Republish", 400)
     );
   }
 
+  if (!req.body.startTime || !req.body.endTime) {
+    return next(new ErrorHandler("Both Starting Time and EndingTime Required"));
+  }
   let data = {
     startTime: new Date(req.body.startTime),
     endTime: new Date(req.body.endTime),
@@ -207,6 +210,7 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
 
   data.bids = [];
   data.commissionCalculated = false;
+
   auctionItem = await Auction.findByIdAndUpdate(id, data, {
     new: true,
     runValidators: true,
@@ -234,5 +238,6 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
     success: true,
     auctionItem,
     message: `Auction Republished and will be active on ${req.body.startTime}`,
+    createdBy,
   });
 });
