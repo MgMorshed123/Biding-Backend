@@ -6,6 +6,8 @@ import fileUpload from "express-fileupload";
 import connectToDb from "./db.js";
 import errorMiddleWare from "./middlewares/error.js";
 import userRoutes from "./Routes/userRoutes.js";
+import auctionItemRoutes from "./Routes/auctionItemRoutes.js";
+
 const app = express();
 
 config({
@@ -30,6 +32,8 @@ app.use(
   })
 );
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/auctionitem", auctionItemRoutes);
+
 app.use(errorMiddleWare);
 connectToDb();
 export default app;

@@ -5,59 +5,60 @@ import { Auction } from "../models/auctionSchema";
 import { v2 as cloudinary } from "cloudinary";
 
 export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
-  if (!req.files || !req.files.image) {
-    return next(new ErrorHandler("Auction item image required", 400));
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return next(new ErrorHandler("Auction item image required.", 400));
   }
 
-  const image = req.files.image;
+  const { image } = req.files;
 
   const allowedFormats = ["image/png", "image/jpeg", "image/webp"];
-
   if (!allowedFormats.includes(image.mimetype)) {
-    return next(new ErrorHandler("File Format not Supported", 400));
+    return next(new ErrorHandler("File format not supported.", 400));
   }
 
-  const { title, description, category, condition, startTime, endTime } =
-    req.body;
-
+  const {
+    title,
+    description,
+    category,
+    condition,
+    startingBid,
+    startTime,
+    endTime,
+  } = req.body;
   if (
     !title ||
     !description ||
     !category ||
     !condition ||
+    !startingBid ||
     !startTime ||
     !endTime
   ) {
-    return next(new ErrorHandler("Please provide all fields ", 400));
+    return next(new ErrorHandler("Please provide all details.", 400));
   }
-
   if (new Date(startTime) < Date.now()) {
     return next(
       new ErrorHandler(
-        "Auction Starting time must be greater than Present Time  ",
+        "Auction starting time must be greater than present time.",
         400
       )
     );
   }
-
   if (new Date(startTime) >= new Date(endTime)) {
     return next(
       new ErrorHandler(
-        "Auction Starting time must be less  than ending Time  ",
+        "Auction starting time must be less than ending time.",
         400
       )
     );
   }
-
   const alreadyOneAuctionActive = await Auction.find({
     createdBy: req.user._id,
     endTime: { $gt: Date.now() },
   });
-
-  if (alreadyOneAuctionActive) {
-    return next(new ErrorHandler("You have Already Active Auction"));
+  if (alreadyOneAuctionActive.length > 0) {
+    return next(new ErrorHandler("You already have one active auction.", 400));
   }
-
   try {
     const cloudinaryResponse = await cloudinary.uploader.upload(
       image.tempFilePath,
@@ -65,23 +66,21 @@ export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
         folder: "MERN_AUCTION_PLATFORM_AUCTIONS",
       }
     );
-
     if (!cloudinaryResponse || cloudinaryResponse.error) {
       console.error(
-        "Cloudinary Error",
-        cloudinaryResponse.error || "Unknown Cloudinary Error"
+        "Cloudinary error:",
+        cloudinaryResponse.error || "Unknown cloudinary error."
       );
-
       return next(
-        new ErrorHandler("Failed to Upload Profile Image to Cloudinary")
+        new ErrorHandler("Failed to upload auction image to cloudinary.", 500)
       );
     }
-
     const auctionItem = await Auction.create({
       title,
       description,
       category,
       condition,
+      startingBid,
       startTime,
       endTime,
       image: {
@@ -90,15 +89,14 @@ export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
       },
       createdBy: req.user._id,
     });
-
     return res.status(201).json({
-      success: false,
-      message: `Auction Item created and will be listed on Auction Page at  ${startTime}`,
+      success: true,
+      message: `Auction item created and will be listed on auction page at ${startTime}`,
       auctionItem,
     });
   } catch (error) {
     return next(
-      new ErrorHandler(error.message || "fAILED TO CREATE AUCTION", 500)
+      new ErrorHandler(error.message || "Failed to created auction.", 500)
     );
   }
 });
