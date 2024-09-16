@@ -174,4 +174,33 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
   if (!auctionItem) {
     return next(new ErrorHandler("Auction Not Found ", 400));
   }
+
+  if (auctionItem.endTime > Date.now()) {
+    return next(
+      new ErrorHandler("Auction is Already active , Cannot Republish", 400)
+    );
+  }
+
+  const data = {
+    startTime: new Date(req.body.startTime),
+    endTime: new Date(req.body.endTime),
+  };
+
+  if (date.startTime < Date.now()) {
+    return next(
+      new ErrorHandler(
+        "Auction  Starting Time Must be greater Than Present Time",
+        400
+      )
+    );
+  }
+
+  if (date.startTime >= date.endTime) {
+    return next(
+      new ErrorHandler(
+        "Auction  Starting Time Must be greater Than End Time",
+        400
+      )
+    );
+  }
 });
