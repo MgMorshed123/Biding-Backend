@@ -68,3 +68,16 @@ export const updateProofStatus = catchAsyncErrors(async (req, res, next) => {
     proof,
   });
 });
+
+export const deletePaymentProof = catchAsyncErrors(async (req, res, next) => {
+  const { id } = req.params;
+  const proof = await PaymentProof.findById(id);
+  if (!proof) {
+    return next(new ErrorHandler("Payment proof not found.", 404));
+  }
+  await proof.deleteOne();
+  res.status(200).json({
+    success: true,
+    message: "Payment proof deleted.",
+  });
+});
