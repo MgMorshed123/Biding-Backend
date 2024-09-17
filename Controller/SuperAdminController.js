@@ -132,56 +132,35 @@ export const fetchAllUsers = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-
-const tranformDataToMonthlyArray = (data, totalMonths = 12) => {
-  const result = Array(totalMonths).fill(0);
-
-  data.forEach((item) => {
-    result[item.month - 1] = item.count;
-  });
-
-  return result;
-};
-
-const biddersArray = tranformDataToMonthlyArray(bidders);
-const auctioneersArray = tranformDataToMonthlyArray(auctioneers);
-
-res.status(200).json({
-  success: true,
-  biddersArray,
-  auctioneersArray,
-});
-});
-
 export const monthlyRevenue = catchAsyncErrors(async (req, res, next) => {
-const payments = await Commission.aggregate([
-  {
-    $group: {
-      _id: {
-        month: { $month: "$createdAt" },
-        year: { $year: "$createdAt" },
+  const payments = await Commission.aggregate([
+    {
+      $group: {
+        _id: {
+          month: { $month: "$createdAt" },
+          year: { $year: "$createdAt" },
+        },
+        totalAmount: { $sum: "$amount" },
       },
-      totalAmount: { $sum: "$amount" },
     },
-  },
-  {
-    $sort: { "_id.year": 1, "_id.month": 1 },
-  },
-]);
+    {
+      $sort: { "_id.year": 1, "_id.month": 1 },
+    },
+  ]);
 
-const tranformDataToMonthlyArray = (payments, totalMonths = 12) => {
-  const result = Array(totalMonths).fill(0);
+  const tranformDataToMonthlyArray = (payments, totalMonths = 12) => {
+    const result = Array(totalMonths).fill(0);
 
-  payments.forEach((payment) => {
-    result[payment._id.month - 1] = payment.totalAmount;
+    payments.forEach((payment) => {
+      result[payment._id.month - 1] = payment.totalAmount;
+    });
+
+    return result;
+  };
+
+  const totalMonthlyRevenue = tranformDataToMonthlyArray(payments);
+  res.status(200).json({
+    success: true,
+    totalMonthlyRevenue,
   });
-
-  return result;
-};
-
-const totalMonthlyRevenue = tranformDataToMonthlyArray(payments);
-res.status(200).json({
-  success: true,
-  totalMonthlyRevenue,
-});
 });
