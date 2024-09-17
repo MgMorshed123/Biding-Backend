@@ -11,6 +11,7 @@ import bidRoutes from "./Routes/bidRoutes.js";
 import commissionRouter from "./Routes/commissionRouter.js";
 import SuperAdminRouter from "./Routes/SuperAdminRoutes.js";
 import { endedAuctionCron } from "./automation/endedAuctionCron.js";
+import { verifyCommissionCron } from "./automation/verifyCommissionCron.js";
 const app = express();
 
 config({
@@ -42,5 +43,6 @@ app.use("/api/v1/superadmin", SuperAdminRouter);
 
 app.use(errorMiddleWare);
 endedAuctionCron();
+verifyCommissionCron();
 connectToDb();
 export default app;
