@@ -10,6 +10,7 @@ import auctionItemRoutes from "./Routes/auctionItemRoutes.js";
 import bidRoutes from "./Routes/bidRoutes.js";
 import commissionRouter from "./Routes/commissionRouter.js";
 import SuperAdminRouter from "./Routes/SuperAdminRoutes.js";
+import { endedAuctionCron } from "./automation/endedAuctionCron.js";
 const app = express();
 
 config({
@@ -40,5 +41,6 @@ app.use("/api/v1/commission", commissionRouter);
 app.use("/api/v1/superadmin", SuperAdminRouter);
 
 app.use(errorMiddleWare);
+endedAuctionCron();
 connectToDb();
 export default app;
