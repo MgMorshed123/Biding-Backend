@@ -1,11 +1,9 @@
-import { User } from "../models/userSchema";
-import { catchAsyncErrors } from "./catchAsyncErrors";
-import ErrorHandler from "./error";
+import { User } from "../models/userSchema.js";
+import { catchAsyncErrors } from "./catchAsyncErrors.js";
 
 export const trackCommissionStatus = catchAsyncErrors(
   async (req, res, next) => {
     const user = await User.findById(req.user._id);
-
     if (user.unpaidCommission > 0) {
       return next(
         new ErrorHandler(

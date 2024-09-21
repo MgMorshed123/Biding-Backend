@@ -1,10 +1,9 @@
-import req from "express/lib/request";
-import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
-import ErrorHandler from "../middlewares/error";
-import { Auction } from "../models/auctionSchema";
+import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
+import ErrorHandler from "../middlewares/error.js";
+import { Auction } from "../models/auctionSchema.js";
 import { v2 as cloudinary } from "cloudinary";
 import mongoose from "mongoose";
-import { User } from "../models/userSchema";
+import { User } from "../models/userSchema.js";
 
 export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
   if (!req.files || Object.keys(req.files).length === 0) {
@@ -185,6 +184,7 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
   if (!req.body.startTime || !req.body.endTime) {
     return next(new ErrorHandler("Both Starting Time and EndingTime Required"));
   }
+
   let data = {
     startTime: new Date(req.body.startTime),
     endTime: new Date(req.body.endTime),
@@ -222,7 +222,6 @@ export const republishItem = catchAsyncErrors(async (req, res, next) => {
     {
       unpaidCommission: 0,
     },
-
     {
       new: true,
       runValidators: false,

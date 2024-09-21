@@ -2,8 +2,8 @@ import cron from "node-cron";
 import { Auction } from "../models/auctionSchema.js";
 import { User } from "../models/userSchema.js";
 import { Bid } from "../models/bidSchema.js";
-import { sendEmail } from "../utils/sendEmail.js";
-import { calculateCommission } from "../controllers/commissionController.js";
+import { calculateCommission } from "../Controller/commissionController.js";
+import { sendEmail } from "../utilitis/sendEmail.js";
 
 export const endedAuctionCron = () => {
   cron.schedule("*/1 * * * *", async () => {
@@ -13,6 +13,7 @@ export const endedAuctionCron = () => {
       endTime: { $lt: now },
       commissionCalculated: false,
     });
+
     for (const auction of endedAuctions) {
       try {
         const commissionAmount = await calculateCommission(auction._id);

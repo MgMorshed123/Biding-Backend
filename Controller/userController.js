@@ -5,6 +5,7 @@ import { generateToken } from "../utilitis/generateToken.js";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 
 export const register = async (req, res, next) => {
+  
   if (!req.files || !req.files.profileImage) {
     return next(new ErrorHandler("Profile Image Required", 400));
   }

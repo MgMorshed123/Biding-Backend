@@ -1,5 +1,5 @@
 import express from "express";
-import { isAuthenticated, isAuthorized } from "../middlewares/auth";
+import { isAuthenticated, isAuthorized } from "../middlewares/auth.js";
 import {
   addNewAuctionItem,
   getAllItems,
@@ -7,8 +7,8 @@ import {
   getMyAuctionItems,
   removeFromAuction,
   republishItem,
-} from "../Controller/auctionItemController";
-import { trackCommissionStatus } from "../middlewares/trackCommisionStatus";
+} from "../Controller/auctionItemController.js";
+import { trackCommissionStatus } from "../middlewares/trackCommisionStatus.js";
 
 const router = express.Router();
 

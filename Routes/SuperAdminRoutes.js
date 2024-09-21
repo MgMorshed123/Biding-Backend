@@ -8,7 +8,7 @@ import {
   getPaymentProofDetail,
   monthlyRevenue,
   updateProofStatus,
-} from "../controllers/superAdminController.js";
+} from "../Controller/SuperAdminController.js";
 
 const router = express.Router();
 
