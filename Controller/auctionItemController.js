@@ -53,10 +53,14 @@ export const addNewAuctionItem = catchAsyncErrors(async (req, res, next) => {
       )
     );
   }
+  const currentServerTime = new Date();
+  console.log("Current Server Time with Offset:", currentServerTime.toString());
+
   const alreadyOneAuctionActive = await Auction.find({
     createdBy: req.user._id,
-    endTime: { $gt: Date.now() },
+    endTime: { $gt: new Date().toISOString() },
   });
+  console.log("alreadyOneAuctionActive", alreadyOneAuctionActive);
   if (alreadyOneAuctionActive.length > 0) {
     return next(new ErrorHandler("You already have one active auction.", 400));
   }

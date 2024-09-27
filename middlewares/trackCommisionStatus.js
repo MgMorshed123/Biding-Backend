@@ -1,5 +1,6 @@
 import { User } from "../models/userSchema.js";
 import { catchAsyncErrors } from "./catchAsyncErrors.js";
+import ErrorHandler from "./error.js";
 
 export const trackCommissionStatus = catchAsyncErrors(
   async (req, res, next) => {

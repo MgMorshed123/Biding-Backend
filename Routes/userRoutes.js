@@ -14,6 +14,6 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/me", isAuthenticated, getProfile);
 router.post("/logout", logOut);
-router.post("/leader", fetchLeaderBoard);
+router.get("/leader", fetchLeaderBoard);
 
 export default router;

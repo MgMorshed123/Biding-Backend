@@ -8,7 +8,7 @@ const router = express.Router();
 router.post(
   "/place/:id",
   isAuthenticated,
-  isAuthorized("Auctioneer"),
+  isAuthorized("Bidder"),
   checkAuctionEndTime,
   placeBid
 );

@@ -22,7 +22,9 @@ export const endedAuctionCron = () => {
           auctionItem: auction._id,
           amount: auction.currentBid,
         });
+        console.log("highestBidder", highestBidder);
         const auctioneer = await User.findById(auction.createdBy);
+        console.log("auctioneer", auctioneer);
         auctioneer.unpaidCommission = commissionAmount;
         if (highestBidder) {
           auction.highestBidder = highestBidder.bidder.id;
