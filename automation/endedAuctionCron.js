@@ -9,11 +9,9 @@ export const endedAuctionCron = () => {
   cron.schedule("*/1 * * * *", async () => {
     const now = new Date();
     console.log("Cron for ended auction running...");
-    const endedAuctions = await Auction.find({
-      endTime: { $lt: now },
-      commissionCalculated: false,
-    });
+    const endedAuctions = await Auction.find({});
 
+    console.log("endedAuctions", endedAuctions);
     for (const auction of endedAuctions) {
       try {
         const commissionAmount = await calculateCommission(auction._id);
